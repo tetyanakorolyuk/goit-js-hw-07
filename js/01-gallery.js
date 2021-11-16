@@ -24,8 +24,6 @@ function createImagesList(galleryItems) {
     }).join('');
 }
 
-const visible = basicLightbox.visible();
-
 function onImageClick(event) {
     event.preventDefault();
     const isImageOriginal = event.target.dataset.source;
@@ -33,18 +31,14 @@ function onImageClick(event) {
         return
     };
     const instance = basicLightbox.create(`
-        <img src="${isImageOriginal}" width="800" height="600">`);
+        <img src="${isImageOriginal}" width="800" height="600">`, {
+        onShow: (instance) => {
+            window.addEventListener('keydown', (event) => {
+                if (event.code === 'Escape') {
+                    instance.close();
+                }
+            });
+        },
+    });
     instance.show();
-
-    if (!visible) {
-        document.removeEventListener("keydown", onCloseImageOriginalModal);
-    }
-    document.addEventListener("keydown", onCloseImageOriginalModal);
-
-}
-
-function onCloseImageOriginalModal(event) {
-    if (event.code === 'Escape')
-        document.removeEventListener("keydown", onCloseImageOriginalModal);
-    instance.close();
 }
